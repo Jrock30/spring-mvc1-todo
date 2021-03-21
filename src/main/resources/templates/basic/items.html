@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <!-- 참고
+          > 타임리프는 순수 HTML을 파일을 웹 브라우저에서 열어도 내용을 확인할 수 있고, 서버를 통해 뷰 템플릿을
+          > 거치면 동적으로 변경된 결과를 확인할 수 있다. JSP를 생각해보면, JSP 파일은 웹 브라우저에서 그냥 열면 JSP 소스코드와 HTML이 뒤죽박죽 되어서 정상적인 확인이 불가능하다. 오직 서버를 통해서 JSP를 열어야 한다.
+          > 이렇게 순수 HTML을 그대로 유지하면서 뷰 템플릿도 사용할 수 있는 타임리프의 특징을 네츄럴 템플릿 (natural templates)이라 한다.
+    -->
+    <!-- 절대 경로 -->
+    <!-- 서버사이드 렌더링이 될 시에 th: 문법이 먹히고 바로 열릴 시 th말고 순수가 먹힘-->
+    <!-- 타임리프 핵심
+         핵심은 th:xxx 가 붙은 부분은 서버사이드에서 렌더링 되고, 기존 것을 대체한다. th:xxx 이 없으면 기존 html의 xxx 속성이 그대로 사용된다.
+         HTML을 파일로 직접 열었을 때, th:xxx 가 있어도 웹 브라우저는 ht: 속성을 알지 못하므로 무시한다. 따라서 HTML을 파일 보기를 유지하면서 템플릿 기능도 할 수 있다.
+     -->
+    <!--
+    URL 링크 표현식 - @{...}, th:href="@{/css/bootstrap.min.css}"
+    @{...} : 타임리프는 URL 링크를 사용하는 경우 @{...} 를 사용한다. 이것을 URL 링크 표현식이라 한다. URL 링크 표현식을 사용하면 서블릿 컨텍스트를 자동으로 포함한다.
+     -->
+    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>상품 목록</h2>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary float-end"
+                    onclick="location.href='addForm.html'"
+                    th:onclick="|location.href='@{/basic/items/add}'|" type="button">
+                상품 등록
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <!-- URL 링크 표현식2 - @{...}, th:href="@{/basic/items/{itemId}(itemId=${item.id})}"
+                     상품 ID를 선택하는 링크를 확인해보자.
+                     URL 링크 표현식을 사용하면 경로를 템플릿처럼 편리하게 사용할 수 있다.
+                     경로 변수( {itemId} ) 뿐만 아니라 쿼리 파라미터도 생성한다.
+                     예) th:href="@{/basic/items/{itemId}(itemId=${item.id}, query='test')}"
+                     생성 링크: http://localhost:8080/basic/items/1?query=test
+                 -->
+                <!-- 아래의 문법 두개는 같다. 조금 더 데이터를 커스텀 하려면 위에 처럼 쓰면 되고 간단하게 데이터만 넣으면 아래 두번쨰 처럼 쓰면 될 듯 -->
+                <td><a href="item.html" th:href="@{/basic/items/{itemId} (itemId=${item.id})}" th:text="${item.id}">회원id</a></td>
+                <td><a href="item.html" th:href="@{|/basic/items/${item.id}|}" th:text="${item.itemName}">상품명</a></td>
+                <td th:text="${item.price}">10000</td>
+                <td th:text="${item.quantity}">10</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> <!-- /container -->
+
+</body>
+</html>
